@@ -51,13 +51,13 @@ template <typename value_type> class array
         value_type &front ( void );
         const value_type &back ( void ) const;
         value_type &back ( void );
-        size_t size ( void ) const;
+        size_t get_size ( void ) const;
         bool is_empty ( void ) const;
         void assign ( const value_type *new_elements, const size_t new_length );
         void assign ( value_type const *first_element, value_type const *past_last_element );
         void assign ( const size_t new_length, const value_type new_element );
         value_type &operator [] ( size_t index ) const;
-        value_type *data ( void ) const;
+        value_type *get_data ( void ) const;
 
         iterator push_back ( const value_type &new_value );
         void pop_back ( void );
@@ -84,7 +84,7 @@ template <typename value_type>
 typename array<value_type>::iterator &array<value_type>::iterator::operator++()
     {
     ++index;
-    if ( index >= owner->size () )
+    if ( index >= owner->get_size () )
         {
         index = -1;
         }
@@ -167,7 +167,7 @@ bool array<value_type>::iterator::is_valid ( void ) const
     {
     if ( !owner ) return false;
     if ( index == -1 ) return false;
-    return index < owner->size ();
+    return index < owner->get_size ();
     }
 
 template <typename value_type>
@@ -312,7 +312,7 @@ value_type &array<value_type>::back ( void )
     }
 
 template <typename value_type>
-size_t array<value_type>::size ( void ) const
+size_t array<value_type>::get_size ( void ) const
     {
     return count;
     }
@@ -364,7 +364,7 @@ value_type &array<value_type>::operator [] ( size_t index ) const
     }
 
 template <typename value_type>
-value_type *array<value_type>::data ( void ) const
+value_type *array<value_type>::get_data ( void ) const
     {
     return elements;
     }

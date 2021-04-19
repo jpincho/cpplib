@@ -12,14 +12,14 @@ void array_test_push_back ( void )
     array.push_back ( 11 );
     array.push_back ( 79 );
 
-    for ( uint8_t cont = 0; cont < array.size (); ++cont )
+    for ( uint8_t cont = 0; cont < array.get_size (); ++cont )
         printf ( "%u - %u\n", cont, array[cont] );
 
     assert ( array[0] == 42 );
     assert ( array[1] == 25 );
     assert ( array[2] == 11 );
     assert ( array[3] == 79 );
-    assert ( array.size () == 4 );
+    assert ( array.get_size () == 4 );
     }
 
 void array_test_value_change ( void )
@@ -32,14 +32,14 @@ void array_test_value_change ( void )
     array.push_back ( 79 );
 
     array[2] = 0;
-    for ( uint8_t cont = 0; cont < array.size(); ++cont )
+    for ( uint8_t cont = 0; cont < array.get_size(); ++cont )
         printf ( "%u - %u\n", cont, array[cont] );
 
     assert ( array[0] == 42 );
     assert ( array[1] == 25 );
     assert ( array[2] == 0 );
     assert ( array[3] == 79 );
-    assert ( array.size () == 4 );
+    assert ( array.get_size () == 4 );
     }
 
 void array_test_iterator ( void )
@@ -51,7 +51,7 @@ void array_test_iterator ( void )
     array.push_back ( 11 );
     array.push_back ( 79 );
 
-    for ( uint8_t cont = 0; cont < array.size (); ++cont )
+    for ( uint8_t cont = 0; cont < array.get_size (); ++cont )
         printf ( "%u - %u\n", cont, array[cont] );
     int cont = 0;
     for ( cpplib::array<uint8_t>::iterator iterator = array.begin (); iterator != array.end (); ++iterator, ++cont )

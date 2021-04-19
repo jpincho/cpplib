@@ -49,7 +49,7 @@ class string
 
         size_t get_length ( void ) const;
         bool is_empty ( void ) const;
-        char *data ( void ) const;
+        char *get_data ( void ) const;
         char operator [] ( const size_t index ) const;
         string &operator = ( const string &other );
         char *operator () ( void ) const;
@@ -278,7 +278,7 @@ bool string::is_empty ( void ) const
     return length == 0;
     }
 
-char *string::data ( void ) const
+char *string::get_data ( void ) const
     {
     return elements;
     }
