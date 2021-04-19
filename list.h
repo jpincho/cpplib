@@ -59,7 +59,7 @@ class list
         value_type &front ( void );
         const value_type &back ( void ) const;
         value_type &back ( void );
-        size_t size ( void ) const;
+        size_t get_size ( void ) const;
         bool is_empty ( void ) const;
         iterator push_back ( const value_type &new_value );
         iterator push_front ( const value_type &new_value );
@@ -366,7 +366,7 @@ value_type &list<value_type>::back ( void )
     }
 
 template <typename value_type>
-size_t list<value_type>::size ( void ) const
+size_t list<value_type>::get_size ( void ) const
     {
     return count;
     }

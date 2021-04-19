@@ -18,8 +18,8 @@ void list_test_push_back ( void )
         printf ( "%u\n", *iterator );
         assert ( *iterator == cont );
         }
-    printf ( "List size is %zu\n", list.size () );
-    assert ( list.size () == 20 );
+    printf ( "List size is %zu\n", list.get_size () );
+    assert ( list.get_size () == 20 );
 
     printf ( "Fifth element is %u\n", * ( list.begin () + 5 ) );
     assert ( * ( list.begin () + 5 ) == 5 );

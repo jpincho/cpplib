@@ -16,5 +16,9 @@ add_test ( NAME "List tests" COMMAND list_tests )
 add_executable ( string_tests "string_tests.cpp" )
 add_test ( NAME "String tests" COMMAND string_tests )
 
+add_executable ( ring_buffer_tests "ring_buffer_tests.cpp" )
+add_test ( NAME "Ring buffer tests" COMMAND ring_buffer_tests )
+
 add_executable ( vectorized_container_tests "vectorized_container_tests.cpp" )
 add_test ( NAME "Vectorized container tests" COMMAND vectorized_container_tests )
+
