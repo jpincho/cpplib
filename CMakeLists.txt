@@ -1,0 +1,12 @@
+project ( cpplib )
+cmake_minimum_required ( VERSION 3.14 )
+
+set ( CMAKE_CXX_STANDARD 11 )
+set ( CMAKE_CXX_STANDARD_REQUIRED ON )
+
+file ( GLOB HEADERS "*.h" )
+
+enable_testing()
+add_executable ( array_tests "array_tests.cpp" )
+add_test ( NAME "Array tests" COMMAND array_tests )
+
