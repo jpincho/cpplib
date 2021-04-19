@@ -10,3 +10,5 @@ enable_testing()
 add_executable ( array_tests "array_tests.cpp" )
 add_test ( NAME "Array tests" COMMAND array_tests )
 
+add_executable ( list_tests "list_tests.cpp" )
+add_test ( NAME "List tests" COMMAND list_tests )

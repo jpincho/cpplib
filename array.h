@@ -7,7 +7,7 @@ namespace cpplib
 {
 template <typename value_type> class array
     {
-    protected:
+    private:
         value_type *elements;
         size_t count, capacity;
     public:
@@ -17,33 +17,27 @@ template <typename value_type> class array
             protected:
                 off_t index;
                 const array <value_type> *owner;
-                iterator ( const array *new_owner, off_t new_index )
-                    {
-                    owner = new_owner;
-                    index = new_index;
-                    }
+                iterator ( const array *new_owner, off_t new_index );
             public:
                 iterator ( void );
                 iterator ( const iterator &other );
-                iterator &operator++();
-                iterator &operator--();
+                iterator &operator ++ ( void );
+                iterator &operator -- ( void );
                 iterator operator++ ( int );
                 iterator operator-- ( int );
-                bool operator== ( const iterator &other ) const;
-                bool operator!= ( const iterator &other ) const;
+                bool operator == ( const iterator &other ) const;
+                bool operator != ( const iterator &other ) const;
                 iterator &operator = ( const iterator &other );
-                value_type &operator*();
+                value_type &operator * ( void ) const;
                 iterator operator + ( const off_t delta ) const;
                 value_type &get ( void ) const;
-                bool valid ( void ) const;
+                bool is_valid ( void ) const;
             };
 
         array ( void );
         ~array ( void );
         iterator add_at_end ( const value_type &new_value );
         void remove_from_end ( void );
-        iterator push_back ( const value_type &new_value );
-        void pop_back ( void );
         iterator erase ( const iterator &reference_iterator );
         void erase ( const size_t &index );
         bool reserve ( size_t new_capacity );
@@ -58,13 +52,23 @@ template <typename value_type> class array
         const value_type &back ( void ) const;
         value_type &back ( void );
         size_t size ( void ) const;
-        bool empty ( void ) const;
+        bool is_empty ( void ) const;
         void assign ( const value_type *new_elements, const size_t new_length );
         void assign ( value_type const *first_element, value_type const *past_last_element );
         void assign ( const size_t new_length, const value_type new_element );
         value_type &operator [] ( size_t index ) const;
         value_type *data ( void ) const;
+
+        iterator push_back ( const value_type &new_value );
+        void pop_back ( void );
     };
+
+template <typename value_type>
+array<value_type>::iterator::iterator ( const array *new_owner, off_t new_index )
+    {
+    owner = new_owner;
+    index = new_index;
+    }
 
 template <typename value_type>
 array<value_type>::iterator::iterator ( void )
@@ -132,7 +136,7 @@ typename array<value_type>::iterator &array<value_type>::iterator::operator = ( 
     }
 
 template <typename value_type>
-value_type &array<value_type>::iterator::operator*()
+value_type &array<value_type>::iterator::operator * ( void ) const
     {
     return owner->operator[] ( index );
     }
@@ -159,7 +163,7 @@ value_type &array<value_type>::iterator::get ( void ) const
     }
 
 template <typename value_type>
-bool array<value_type>::iterator::valid ( void ) const
+bool array<value_type>::iterator::is_valid ( void ) const
     {
     if ( !owner ) return false;
     if ( index == -1 ) return false;
@@ -179,7 +183,7 @@ array<value_type>::~array ( void )
     clear();
     free ( elements );
     elements = nullptr;
-    count = capacity = 0;
+    capacity = 0;
     }
 
 template <typename value_type>
@@ -203,23 +207,11 @@ void array<value_type>::remove_from_end ( void )
     }
 
 template <typename value_type>
-typename array<value_type>::iterator array<value_type>::push_back ( const value_type &new_value )
-    {
-    return add_at_end ( new_value );
-    }
-
-template <typename value_type>
-void array<value_type>::pop_back ( void )
-    {
-    remove_from_end ();
-    }
-
-template <typename value_type>
 typename array<value_type>::iterator array<value_type>::erase ( const iterator &reference_iterator )
     {
     if ( ( array * ) reference_iterator.owner != this )
         throw "calling erase with invalid iterator";
-    if ( reference_iterator.valid () == false )
+    if ( reference_iterator.is_valid() == false )
         throw "calling erase with invalid iterator";
     for ( size_t index = reference_iterator.index; index < count - 1; ++index )
         elements[ index ] = elements[ index + 1 ];
@@ -286,8 +278,7 @@ typename array<value_type>::iterator array<value_type>::find ( const value_type 
 template <typename value_type>
 typename array<value_type>::iterator array<value_type>::begin ( void ) const
     {
-    iterator result ( this, 0 );
-    return result;
+    return iterator ( this, 0 );;
     }
 
 template <typename value_type>
@@ -327,7 +318,7 @@ size_t array<value_type>::size ( void ) const
     }
 
 template <typename value_type>
-bool array<value_type>::empty ( void ) const
+bool array<value_type>::is_empty ( void ) const
     {
     return count == 0;
     }
@@ -376,5 +367,17 @@ template <typename value_type>
 value_type *array<value_type>::data ( void ) const
     {
     return elements;
+    }
+
+template <typename value_type>
+typename array<value_type>::iterator array<value_type>::push_back ( const value_type &new_value )
+    {
+    return add_at_end ( new_value );
+    }
+
+template <typename value_type>
+void array<value_type>::pop_back ( void )
+    {
+    remove_from_end();
     }
 }
