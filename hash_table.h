@@ -50,15 +50,15 @@ class hash_table
                 iterator ( const iterator &other ) : owner ( other.owner ), bucket_index ( other.bucket_index ), entry_index ( other.entry_index ) {}
                 iterator &operator++()
                     {
-                    if ( entries_pointer[bucket_index].size() > entry_index + 1 ) // Still have entries in this bucket, so just move forward in the bucket
+                    if ( owner->entries[bucket_index].bucket.get_size() > entry_index + 1 ) // Still have entries in this bucket, so just move forward in the bucket
                         {
                         ++entry_index;
                         return *this;
                         }
                     // find the next bucket that contains an entry
-                    for ( ++bucket_index; bucket_index < bucket_count; ++bucket_index )
+                    for ( ++bucket_index; bucket_index < owner->bucket_count; ++bucket_index )
                         {
-                        if ( entries_pointer[bucket_index].bucket.size() )
+                        if ( owner->entries[bucket_index].bucket.get_size() )
                             {
                             entry_index = 0;
                             return *this;
@@ -79,9 +79,9 @@ class hash_table
                     // find the previous bucket that contains an entry
                     for ( --bucket_index; bucket_index >= 0 && bucket_index < owner->bucket_count; --bucket_index )
                         {
-                        if ( entries_pointer[bucket_index].bucket.size() )
+                        if ( owner->entries[bucket_index].bucket.size() )
                             {
-                            entry_index = entries_pointer[bucket_index].bucket.size() - 1;
+                            entry_index = owner->entries[bucket_index].bucket.size() - 1;
                             return *this;
                             }
                         }
@@ -159,27 +159,27 @@ class hash_table
         void add ( const key_type &new_key, const value_type &new_value )
             {
             uint64_t hash_value = hash ( new_key );
-            size_t index = hash_value % bucket_count;
-            for ( size_t iterator = 0; iterator < entries[index].bucket.size(); ++iterator )
+            size_t bucket_index = hash_value % bucket_count;
+            for ( size_t entry_index = 0; entry_index < entries[bucket_index].bucket.size(); ++entry_index )
                 {
-                if ( entries[index].bucket[iterator].key == new_key )
+                if ( entries[bucket_index].bucket[entry_index].key == new_key )
                     {
-                    entries[index].bucket[iterator].value = new_value;
+                    entries[bucket_index].bucket[entry_index].value = new_value;
                     return;
                     }
                 }
-            entries[index].bucket.push_back ( key_value_pair ( new_key, new_value ) );
+            entries[bucket_index].bucket.push_back ( key_value_pair ( new_key, new_value ) );
             }
 
         void erase ( const key_type &key )
             {
             uint64_t hash_value = hash ( key );
-            size_t index = hash_value % bucket_count;
-            for ( size_t iterator = 0; iterator < entries[index].bucket.size(); ++iterator )
+            size_t bucket_index = hash_value % bucket_count;
+            for ( size_t entry_index = 0; entry_index < entries[bucket_index].bucket.size(); ++entry_index )
                 {
-                if ( entries[index].bucket[iterator].key == key )
+                if ( entries[bucket_index].bucket[entry_index].key == key )
                     {
-                    entries[index].bucket.erase ( iterator );
+                    entries[bucket_index].bucket.erase ( entry_index );
                     return;
                     }
                 }
@@ -193,39 +193,58 @@ class hash_table
                 throw "calling erase with invalid iterator";
             if ( reference_iterator.bucket_index > bucket_count )
                 throw "calling erase with iterator with invalid bucket_index";
-            if ( reference_iterator.entry_index > entries[reference_iterator.bucket_index].bucket.size() )
+            if ( reference_iterator.entry_index > entries[reference_iterator.bucket_index].bucket.get_size() )
                 throw "calling erase with iterator with invalid entry_index";
 
             entries[reference_iterator.bucket_index].bucket.erase ( reference_iterator.entry_index );
             }
 
+        void clear ( void )
+            {
+            for ( size_t bucket_index = 0; bucket_index < bucket_count; ++bucket_index )
+                entries[bucket_index].bucket.clear();
+            }
+
         iterator find ( const key_type &key )
             {
             uint64_t hash_value = hash ( key );
-            size_t index = hash_value % bucket_count;
-            for ( size_t iterator = 0; iterator < entries[index].bucket.size(); ++iterator )
+            size_t bucket_index = hash_value % bucket_count;
+            for ( size_t entry_index = 0; entry_index < entries[bucket_index].bucket.get_size(); ++entry_index )
                 {
-                if ( entries[index].bucket[iterator].key == key )
+                if ( entries[bucket_index].bucket[entry_index].key == key )
                     {
-                    return iterator ( this, index, iterator );
+                    return iterator ( this, bucket_index, entry_index );
                     }
                 }
             return iterator();
             }
 
+        iterator begin ( void ) const
+            {
+            for ( size_t bucket_index = 0; bucket_index < bucket_count; ++bucket_index )
+                {
+                if ( entries[bucket_index].bucket.get_size() )
+                    return iterator ( this, bucket_index, 0 );
+                }
+            return iterator();
+            }
+        iterator end ( void ) const
+            {
+            return iterator();
+            }
         value_type &operator [] ( const key_type &new_key )
             {
             uint64_t hash_value = hash ( new_key );
-            size_t index = hash_value % bucket_count;
-            for ( size_t iterator = 0; iterator < entries[index].bucket.size(); ++iterator )
+            size_t bucket_index = hash_value % bucket_count;
+            for ( size_t entry_index = 0; entry_index < entries[bucket_index].bucket.get_size(); ++entry_index )
                 {
-                if ( entries[index].bucket[iterator].key == new_key )
+                if ( entries[bucket_index].bucket[entry_index].key == new_key )
                     {
-                    return entries[index].bucket[iterator].value;
+                    return entries[bucket_index].bucket[entry_index].value;
                     }
                 }
-            entries[index].bucket.push_back ( key_value_pair ( new_key, value_type() ) );
-            return entries[index].bucket.back().value;
+            entries[bucket_index].bucket.push_back ( key_value_pair ( new_key, value_type() ) );
+            return entries[bucket_index].bucket.back().value;
             }
     };
 }
