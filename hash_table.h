@@ -26,6 +26,7 @@ class hash_table
             } hash_table_entry;
         size_t bucket_count;
         hash_table_entry *entries;
+        hash_table <key_type, value_type> &operator = ( const hash_table<key_type, value_type> &other ) = delete;
     public:
         class iterator
             {

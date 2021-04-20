@@ -7,6 +7,7 @@ template <typename value_type>
 class list
     {
     private:
+        list <value_type> &operator = ( const list<value_type> &other ) = delete;
         class list_node
             {
             public:

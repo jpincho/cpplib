@@ -27,7 +27,7 @@ template <typename value_type> class vectorized_container
         intptr_t get_node_from_list ( list_struct &list );
         void remove_node_from_list ( list_struct &list, const intptr_t index );
         void add_node_to_list ( list_struct &list, const intptr_t index );
-
+        vectorized_container <value_type> &operator = ( const vectorized_container<value_type> &other ) = delete;
     public:
         class iterator
             {

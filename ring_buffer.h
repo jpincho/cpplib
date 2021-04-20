@@ -6,8 +6,8 @@ namespace cpplib
 {
 template <typename value_type> class ring_buffer
     {
-    protected:
-        //template <typename value_type> friend class iterator;
+    private:
+        ring_buffer <value_type> &operator = ( const ring_buffer<value_type> &other ) = delete;
         value_type *elements;
         size_t count, capacity;
         intptr_t head, tail;
