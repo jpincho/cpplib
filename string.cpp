@@ -61,6 +61,8 @@ void string::free ( void )
 
 void string::resize ( const size_t new_capacity )
     {
+    if ( new_capacity == 0 )
+        return;
     reserve ( new_capacity );
     for ( size_t index = length; index < new_capacity; ++index )
         elements[index] = ' ';
@@ -71,6 +73,8 @@ void string::resize ( const size_t new_capacity )
 void string::assign ( const char *new_string )
     {
     size_t new_length = strlen ( new_string );
+    if ( new_length == 0 )
+        return;
     reserve ( new_length );
     memcpy ( elements, new_string, new_length + 1 );
     length = new_length;
@@ -78,6 +82,8 @@ void string::assign ( const char *new_string )
 
 void string::assign ( const char *new_string, size_t desired_length )
     {
+    if ( desired_length == 0 )
+        return;
     size_t max_length = strlen ( new_string );
     if ( desired_length > max_length )
         desired_length = max_length;
@@ -90,6 +96,8 @@ void string::assign ( const char *new_string_begin, const char *new_string_end )
     {
     assert ( new_string_end >= new_string_begin );
     size_t desired_length = new_string_end - new_string_begin;
+    if ( desired_length == 0 )
+        return;
     reserve ( desired_length );
     memcpy ( elements, new_string_begin, desired_length );
     elements[desired_length] = 0;
@@ -98,6 +106,8 @@ void string::assign ( const char *new_string_begin, const char *new_string_end )
 
 void string::assign ( const string &new_string )
     {
+    if ( new_string.length == 0 )
+        return;
     reserve ( new_string.length );
     memcpy ( elements, new_string.elements, new_string.length + 1 );
     length = new_string.length;
@@ -106,6 +116,8 @@ void string::assign ( const string &new_string )
 void string::append ( const char *new_string )
     {
     size_t other_length = strlen ( new_string );
+    if ( other_length == 0 )
+        return;
     reserve ( length + other_length );
     memcpy ( elements + length, new_string, other_length + 1 );
     length += other_length;
