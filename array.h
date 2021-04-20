@@ -35,6 +35,8 @@ template <typename value_type> class array
             };
 
         array ( void );
+        array ( const array &other );
+        array ( array &&other );
         ~array ( void );
         iterator add_at_end ( const value_type &new_value );
         void remove_from_end ( void );
@@ -57,6 +59,7 @@ template <typename value_type> class array
         void assign ( value_type const *first_element, value_type const *past_last_element );
         void assign ( const size_t new_length, const value_type new_element );
         value_type &operator [] ( size_t index ) const;
+        array <value_type> &operator = ( const array <value_type> &other );
         value_type *get_data ( void ) const;
 
         iterator push_back ( const value_type &new_value );
@@ -174,6 +177,28 @@ template <typename value_type>
 array<value_type>::array ( void )
     {
     elements = nullptr;
+    count = capacity = 0;
+    }
+
+template <typename value_type>
+array<value_type>::array ( const array &other )
+    {
+    elements = nullptr;
+    count = capacity = 0;
+    reserve ( other.count );
+    for ( size_t index = 0; index < other.count; ++index )
+        push_back ( other.elements[index] );
+    }
+
+template <typename value_type>
+array<value_type>::array ( array &&other )
+    {
+    elements = other.elements;
+    count = other.count;
+    capacity = other.capacity;
+    other.capacity = 0;
+    other.count = 0;
+    other.elements = nullptr;
     count = capacity = 0;
     }
 
@@ -361,6 +386,16 @@ value_type &array<value_type>::operator [] ( size_t index ) const
         throw "trying to access position out of bounds";
         }
     return elements[ index ];
+    }
+
+template <typename value_type>
+array <value_type> &array<value_type>::operator = ( const array <value_type> &other )
+    {
+    clear();
+    reserve ( other.count );
+    for ( size_t index = 0; index < other.count; ++index )
+        push_back ( other.elements[index] );
+    return *this;
     }
 
 template <typename value_type>
