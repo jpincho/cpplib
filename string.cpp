@@ -210,10 +210,9 @@ char *string::trim ( const char *trim_characters )
     if ( start == -1 )
         return elements;
     off_t end = find_last_not_of ( trim_characters );
-    if ( start < end )
-        memcpy ( elements, elements + start, end - start );
+    memcpy ( elements, elements + start, end - start + 1);
 
-    length = end - start;
+    length = end - start + 1;
     elements[length] = 0;
     return elements;
     }
