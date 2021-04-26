@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "ring_buffer.h"
+#include "../ring_buffer.h"
 #include <stdint.h>
 
 void ring_buffer_test ( void )
