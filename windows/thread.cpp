@@ -1,4 +1,4 @@
-#include "thread_windows.h"
+#include "thread.hpp"
 
 namespace cpplib
 {
@@ -32,5 +32,10 @@ bool thread::join( void )
 bool thread::is_running( void )
 	{
 	return (thread_handle != nullptr);
+	}
+
+uint32_t thread::get_id( void )
+	{
+	return GetCurrentThreadId();
 	}
 }

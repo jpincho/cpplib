@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../array.h"
+#include "../array.hpp"
 #include <stdint.h>
 #include <assert.h>
 

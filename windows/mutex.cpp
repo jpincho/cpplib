@@ -1,4 +1,4 @@
-#include "mutex_windows.h"
+#include "mutex.hpp"
 #include <Windows.h>
 
 namespace cpplib

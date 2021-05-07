@@ -404,6 +404,6 @@ void list<value_type>::pop_front ( void )
     {
     if ( !first )
         return;
-    erase ( first );
+    erase ( begin() );
     }
 }

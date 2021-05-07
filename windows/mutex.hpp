@@ -8,7 +8,7 @@ class mutex
 	private:
 		CRITICAL_SECTION handle;
 		bool created;
-
+		mutex &operator = ( const mutex &other ) = delete;
 	public:
 		mutex( void );
 		bool create( void );
