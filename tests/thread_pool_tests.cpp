@@ -21,5 +21,6 @@ int main( void )
 		pool.add_task( &function, (void *) cont );
 		}
 
+	Sleep( 5000 );
 	pool.shutdown();
 	}

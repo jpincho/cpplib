@@ -31,7 +31,7 @@ void thread_pool_worker::work( void )
 	printf( "Thread %lu starting\n", current_id );
 	while ( pool->running )
 		{
-		thread_pool::task *current_task;
+		thread_pool::task_holder current_task_holder;
 		printf( "Thread %lu waiting\n", current_id );
 		pool->new_task_semaphore.decrement(); // Wait here until a new task is available
 		printf( "Thread %lu ended waiting\n", current_id );
@@ -47,14 +47,20 @@ void thread_pool_worker::work( void )
 			continue;
 			}
 
-		current_task = pool->task_list.front(); // TODO Move instead of copy
+		current_task_holder=pool->task_list.front(); // TODO Move instead of copy
 		pool->task_list.pop_front();
 		pool->task_list_mutex.unlock(); // Unlocks so that another thread can use the tasklist
 
 		printf( "Thread %lu working\n", current_id );
-		uint32_t task_result = current_task->function( current_task->parameters );// Run the task itself
-		if ( current_task->auto_release )
-			delete current_task;
+		// Run the task itself
+		if ( current_task_holder.pointer )
+			{
+			current_task_holder.pointer->result = current_task_holder.pointer->function( current_task_holder.pointer->parameters );
+			}
+		else
+			{
+			current_task_holder.copy.result = current_task_holder.copy.function( current_task_holder.copy.parameters );// Run the task itself
+			}
 		}
 	}
 
@@ -115,18 +121,13 @@ uint32_t thread_pool::get_thread_count( void )
 void thread_pool::add_task( uint32_t( *function )( void * ), void *parameters )
 	{
 	auto_mutex_lock lock( task_list_mutex);
-	task_list.push_back( new task{ function,parameters } );
+	task_list.push_back( task_holder( function,parameters ) );
 	new_task_semaphore.increment();
 	}
 
 void thread_pool::clear_tasks( void )
 	{
 	auto_mutex_lock lock( task_list_mutex );
-	for ( auto &iterator : task_list )
-		{
-		if ( iterator->auto_release )
-			delete iterator;
-		}
 	task_list.clear();
 	}
 }
