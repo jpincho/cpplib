@@ -123,12 +123,98 @@ void string::append ( const char *new_string )
     length += other_length;
     }
 
+void string::append ( const char &new_char )
+    {
+    reserve ( length + 1 );
+    elements[length] = new_char;
+    ++length;
+    }
+
 void string::clear ( void )
     {
     length = capacity = 0;
     }
 
-off_t string::find_first_of ( const char *tokens, const off_t start_offset )
+bool string::compare ( const char *other_string ) const
+    {
+    size_t other_length = strlen ( other_string );
+    // if only one of them is null
+    if ( ( ( elements == nullptr ) || ( other_string == nullptr ) ) && ( elements != other_string ) )
+        return false;
+    // if both are null, return true
+    if ( ( elements == nullptr ) && ( other_string == nullptr ) )
+        return true;
+    if ( length != other_length )
+        return false;
+    return memcmp ( elements, other_string, length ) == 0;
+    }
+
+bool string::compare ( const string &other_string ) const
+    {
+    // if only one of them is null
+    if ( ( ( elements == nullptr ) || ( other_string.elements == nullptr ) ) && ( elements != other_string.elements ) )
+        return false;
+    // if both are null, return true
+    if ( ( elements == nullptr ) && ( other_string.elements == nullptr ) )
+        return true;
+    if ( length != other_string.length )
+        return false;
+    return memcmp ( elements, other_string.elements, length ) == 0;
+    }
+
+off_t string::find_first ( const char token, const off_t start_offset ) const
+    {
+    for ( off_t iterator = start_offset; iterator < length; ++iterator )
+        {
+        if ( elements[iterator] == token )
+            return iterator;
+        }
+    return -1;
+    }
+
+off_t string::find_last ( const char token, off_t start_offset ) const
+    {
+    if ( start_offset == -1 )
+        start_offset = ( off_t ) length - 1;
+    for ( off_t iterator = start_offset; iterator >= 0; --iterator )
+        {
+        if ( elements[iterator] == token )
+            return iterator;
+        }
+    return -1;
+    }
+
+off_t string::find_first_substr ( const string &token, const off_t start_offset ) const
+    {
+    const char *pointer = strstr ( elements + start_offset, token );
+    if ( pointer != nullptr )
+        return ( pointer - elements );
+    return -1;
+    }
+
+off_t string::find_first_not ( const char token, const off_t start_offset ) const
+    {
+    for ( off_t iterator = start_offset; iterator < length; ++iterator )
+        {
+        if ( elements[iterator] != token )
+            return iterator;
+        }
+    return -1;
+    }
+
+off_t string::find_last_not ( const char token, off_t start_offset ) const
+    {
+    if ( start_offset == -1 )
+        start_offset = ( off_t ) length - 1;
+    for ( off_t iterator = start_offset; iterator >= 0; --iterator )
+        {
+        if ( elements[iterator] != token )
+            return iterator;
+        }
+    return -1;
+    }
+
+off_t string::find_first_of ( const char *tokens, const off_t start_offset ) const
     {
     size_t token_count = strlen ( tokens );
     for ( off_t iterator = start_offset; iterator < length; ++iterator )
@@ -142,7 +228,7 @@ off_t string::find_first_of ( const char *tokens, const off_t start_offset )
     return -1;
     }
 
-off_t string::find_last_of ( const char *tokens, off_t start_offset )
+off_t string::find_last_of ( const char *tokens, off_t start_offset ) const
     {
     size_t token_count = strlen ( tokens );
     if ( start_offset == -1 )
@@ -158,7 +244,7 @@ off_t string::find_last_of ( const char *tokens, off_t start_offset )
     return -1;
     }
 
-off_t string::find_first_not_of ( const char *tokens, const off_t start_offset )
+off_t string::find_first_not_of ( const char *tokens, const off_t start_offset ) const
     {
     size_t token_count = strlen ( tokens );
     for ( off_t iterator = start_offset; iterator < length; ++iterator )
@@ -172,7 +258,7 @@ off_t string::find_first_not_of ( const char *tokens, const off_t start_offset )
     return -1;
     }
 
-off_t string::find_last_not_of ( const char *tokens, off_t start_offset )
+off_t string::find_last_not_of ( const char *tokens, off_t start_offset ) const
     {
     size_t token_count = strlen ( tokens );
     if ( start_offset == -1 )
@@ -188,7 +274,7 @@ off_t string::find_last_not_of ( const char *tokens, off_t start_offset )
     return -1;
     }
 
-string string::substr ( const size_t start )
+string string::substr ( const size_t start ) const
     {
     return substr ( start, length - start );
     }
@@ -204,17 +290,25 @@ string string::substr ( const size_t start, size_t desired_length ) const
     return result;
     }
 
-char *string::trim ( const char *trim_characters )
+void string::replace_char ( const char old_value, const char new_value )
+    {
+    for ( size_t iterator = 0; iterator < length; ++iterator )
+        {
+        if ( elements[iterator] == old_value )
+            elements[iterator] = new_value;
+        }
+    }
+
+void string::trim ( const char *trim_characters )
     {
     off_t start = find_first_not_of ( trim_characters );
     if ( start == -1 )
-        return elements;
+        return;
     off_t end = find_last_not_of ( trim_characters );
-    memcpy ( elements, elements + start, end - start + 1);
+    memcpy ( elements, elements + start, end - start + 1 );
 
     length = end - start + 1;
     elements[length] = 0;
-    return elements;
     }
 
 size_t string::get_length ( void ) const
@@ -225,6 +319,18 @@ size_t string::get_length ( void ) const
 bool string::is_empty ( void ) const
     {
     return length == 0;
+    }
+
+bool string::is_numeric ( void ) const
+    {
+    if ( length == 0 )
+        return false;
+    for ( size_t iterator = 0; iterator < length; ++iterator )
+        {
+        if ( ( elements[iterator] < '0' ) || ( elements[iterator] > 9 ) )
+            return false;
+        }
+    return true;
     }
 
 char *string::get_data ( void ) const
@@ -258,22 +364,14 @@ string::operator bool ( void ) const
     return length != 0;
     }
 
-bool string::operator == ( const string &other )
+bool string::operator == ( const string &other ) const
     {
-    // if only one of them is null
-    if ( ( ( elements == nullptr ) || ( other.elements == nullptr ) ) && ( elements != other.elements ) )
-        return false;
-    // if both are null, return true
-    if ( ( elements == nullptr ) && ( other.elements == nullptr ) )
-        return true;
-    if ( length != other.length )
-        return false;
-    return memcmp ( elements, other.elements, length ) == 0;
+    return compare ( other );
     }
 
-bool string::operator != ( const string &other )
+bool string::operator != ( const string &other ) const
     {
-    return ! ( operator== ( other ) );
+    return ! ( compare ( other ) );
     }
 
 string::operator char * ( void ) const
@@ -295,6 +393,13 @@ string string::operator + ( const char *other ) const
     return result;
     }
 
+string string::operator + ( const char &other ) const
+    {
+    string result ( *this );
+    result.append ( other );
+    return result;
+    }
+
 string &string::operator += ( const string &other )
     {
     append ( other );
@@ -302,6 +407,12 @@ string &string::operator += ( const string &other )
     }
 
 string &string::operator += ( const char *other )
+    {
+    append ( other );
+    return *this;
+    }
+
+string &string::operator += ( const char &other )
     {
     append ( other );
     return *this;
