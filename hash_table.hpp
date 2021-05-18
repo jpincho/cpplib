@@ -1,6 +1,6 @@
 #pragma once
-#include "hash.h"
-#include "array.h"
+#include "hash.hpp"
+#include "array.hpp"
 
 namespace cpplib
 {
