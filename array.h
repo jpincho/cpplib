@@ -40,8 +40,8 @@ template <typename value_type> class array
         ~array ( void );
         iterator add_at_end ( const value_type &new_value );
         void remove_from_end ( void );
-        iterator erase ( const iterator &reference_iterator );
-        void erase ( const size_t &index );
+        iterator erase ( const iterator &reference_iterator, const size_t erase_count = 1 );
+        void erase ( const size_t &index, const size_t erase_count = 1 );
         bool reserve ( size_t new_capacity );
         bool resize ( size_t new_size );
         void clear ( void );
@@ -60,6 +60,9 @@ template <typename value_type> class array
         void assign ( const size_t new_length, const value_type new_element );
         value_type &operator [] ( size_t index ) const;
         array <value_type> &operator = ( const array <value_type> &other );
+        array <value_type> &operator += ( const array <value_type> &other );
+        bool operator == ( const array <value_type> &other ) const;
+        bool operator != ( const array <value_type> &other ) const;
         value_type *get_data ( void ) const;
 
         iterator push_back ( const value_type &new_value );
@@ -232,28 +235,28 @@ void array<value_type>::remove_from_end ( void )
     }
 
 template <typename value_type>
-typename array<value_type>::iterator array<value_type>::erase ( const iterator &reference_iterator )
+typename array<value_type>::iterator array<value_type>::erase ( const iterator &reference_iterator, const size_t erase_count )
     {
     if ( ( array * ) reference_iterator.owner != this )
         throw "calling erase with invalid iterator";
     if ( reference_iterator.is_valid() == false )
         throw "calling erase with invalid iterator";
-    for ( size_t index = reference_iterator.index; index < count - 1; ++index )
-        elements[ index ] = elements[ index + 1 ];
-    --count;
+    erase ( reference_iterator.index, erase_count );
     if ( reference_iterator.index < count )
         return iterator ( this, reference_iterator.index );
     return end ();
     }
 
 template <typename value_type>
-void array<value_type>::erase ( const size_t &index )
+void array<value_type>::erase ( const size_t &index, const size_t erase_count )
     {
     if ( index > count )
         throw "calling erase with out of bounds index";
-    for ( size_t iterator = index; iterator < count - 1; ++iterator )
-        elements[iterator] = elements[iterator + 1];
-    --count;
+    if ( index + erase_count > count )
+        throw "calling erase with out of bounds index + erase_count";
+    for ( size_t iterator = index; iterator < count - erase_count; ++iterator )
+        elements[iterator] = elements[iterator + erase_count];
+    count -= erase_count;;
     }
 
 template <typename value_type>
@@ -396,6 +399,34 @@ array <value_type> &array<value_type>::operator = ( const array <value_type> &ot
     for ( size_t index = 0; index < other.count; ++index )
         push_back ( other.elements[index] );
     return *this;
+    }
+
+template <typename value_type>
+array <value_type> &array<value_type>::operator += ( const array <value_type> &other )
+    {
+    reserve ( count + other.count );
+    for ( size_t index = 0; index < other.count; ++index )
+        push_back ( other.elements[index] );
+    return *this;
+    }
+
+template <typename value_type>
+bool array<value_type>::operator == ( const array <value_type> &other ) const
+    {
+    if ( count != other.count )
+        return false;
+    for ( size_t index = 0; index < other.count; ++index )
+        {
+        if ( elements[index] != other.elements[index] )
+            return false;
+        }
+    return true;
+    }
+
+template <typename value_type>
+bool array<value_type>::operator != ( const array <value_type> &other ) const
+    {
+    return !operator== ( other );
     }
 
 template <typename value_type>
