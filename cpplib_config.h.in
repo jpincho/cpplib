@@ -1,2 +1,3 @@
 #pragma once
-#cmakedefine CPPLIB_WINDOWS
+#cmakedefine CPPLIB_TARGET_PLATFORM_WINDOWS
+#cmakedefine CPPLIB_TARGET_PLATFORM_LINUX
