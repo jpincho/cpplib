@@ -135,9 +135,23 @@ path path::operator+ ( const path &other ) const
     return result;
     }
 
+path path::operator+ ( const string &other ) const
+    {
+    path result;
+    result = *this;
+    result.parts += path( other ).parts;
+    return result;
+    }
+
 path &path::operator+= ( const path &other )
     {
     parts += other.parts;
+    return ( *this );
+    }
+
+path &path::operator+= ( const string &other )
+    {
+    parts += path( other ).parts;
     return ( *this );
     }
 
@@ -146,34 +160,19 @@ bool path::operator== ( const path &other ) const
     return ( parts == other.parts );
     }
 
-bool path::operator!= ( const path &other ) const
-    {
-    return ( parts != other.parts );
-    }
-
-path path::operator+ ( const string &other ) const
-    {
-    path result;
-    result = *this;
-    result.parts += path ( other ).parts;
-    return result;
-    }
-
-path &path::operator+= ( const string &other )
-    {
-    parts += path ( other ).parts;
-    return ( *this );
-    }
-
 bool path::operator== ( const string &other ) const
     {
     return ( get_as_string() == other );
+    }
+
+bool path::operator!= ( const path &other ) const
+    {
+    return ( parts != other.parts );
     }
 
 bool path::operator!= ( const string &other ) const
     {
     return ( !operator== ( other ) );
     }
-
 }
 }

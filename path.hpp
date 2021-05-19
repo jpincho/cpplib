@@ -30,12 +30,12 @@ class path
         void expand ( void );
 
         path operator + ( const path &other ) const;
-        path &operator += ( const path &other );
-        bool operator == ( const path &other ) const;
-        bool operator != ( const path &other ) const;
         path operator + ( const string &other ) const;
+        path &operator += ( const path &other );
         path &operator += ( const string &other );
+        bool operator == ( const path &other ) const;
         bool operator == ( const string &other ) const;
+        bool operator != ( const path &other ) const;
         bool operator != ( const string &other ) const;
     };
 
