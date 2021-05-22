@@ -202,7 +202,6 @@ array<value_type>::array ( array &&other )
     other.capacity = 0;
     other.count = 0;
     other.elements = nullptr;
-    count = capacity = 0;
     }
 
 template <typename value_type>
