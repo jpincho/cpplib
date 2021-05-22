@@ -4,7 +4,7 @@ cmake_minimum_required ( VERSION 3.14 )
 set ( CMAKE_CXX_STANDARD 11 )
 set ( CMAKE_CXX_STANDARD_REQUIRED ON )
 
-file ( GLOB SOURCES "*.cpp" "*.hpp" )
+file ( GLOB SOURCES "*.cpp" "*.hpp" "filesystem/*.cpp" "filesystem/*.hpp" )
 
 string ( TOUPPER ${CMAKE_SYSTEM_NAME} UPPERCASE_SYSTEM_NAME )
 set ( CPPLIB_HOST_PLATFORM ${UPPERCASE_SYSTEM_NAME} )

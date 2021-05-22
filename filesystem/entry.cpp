@@ -1,23 +1,61 @@
-#include "file.hpp"
+#include "../cpplib_config.h"
+#include "entry.hpp"
+//#include <sys/types.h>
+#include <sys/stat.h>
 
 namespace cpplib
 {
 namespace filesystem
 {
-file::file( void )
+entry::entry( void )
 	{
 	file_handle = nullptr;
+	size = 0;
+	type = entry_type::none;
 	}
 
-file::~file( void )
+entry::~entry( void )
 	{
 	if ( file_handle )
 		close();
 	}
 
-bool file::open( const char *filename, const file_open_mode new_mode )
+bool entry::set( const char *path )
+	{
+	struct stat info;
+	int result = stat( path, &info);
+	if ( result == -1 )
+		{
+		if ( errno == ENOENT )
+			return false;
+		//LOG_ERROR( "%s", get_error_description( "Unable to get info for file" ).c_str() );
+		return false;
+		}
+	// Populate size
+	size = static_cast <size_t> ( info.st_size );
+	// Populate type
+#if defined ( CPPLIB_TARGET_PLATFORM_WINDOWS )
+	if ( info.st_mode & _S_IFDIR )
+		type = entry_type::folder;
+	else if ( info.st_mode & _S_IFREG )
+		type = entry_type::file;
+#else
+	if ( S_ISDIR( info.st_mode ) )
+		type = entry_type::folder;
+	else if ( S_ISREG( info.st_mode ) )
+		type = entry_type::file;
+	if ( S_ISLNK( info.st_mode ) )
+		type = entry_type::link;
+#endif
+	filename.assign( path );
+	return true;
+	}
+
+bool entry::open( const file_open_mode new_mode )
 	{
 	if ( file_handle )
+		return false;
+	if ( filename.get_length() == 0 )
 		return false;
 
 	char mode_text[3];
@@ -51,12 +89,11 @@ bool file::open( const char *filename, const file_open_mode new_mode )
 	file_handle = fopen( filename, mode_text );
 	if ( !file_handle )
 		return false;
-	this->filename = filename;
 	mode = new_mode;
 	return true;
 	}
 
-bool file::close( void )
+bool entry::close( void )
 	{
 	if ( !file_handle )
 		return false;
@@ -66,7 +103,7 @@ bool file::close( void )
 	return true;
 	}
 
-bool file::write( const uint8_t *data, const size_t length, size_t *bytes_written )
+bool entry::write( const uint8_t *data, const size_t length, size_t *bytes_written )
     {
     if ( !file_handle )
         return false;
@@ -83,7 +120,7 @@ bool file::write( const uint8_t *data, const size_t length, size_t *bytes_writte
     return true;
     }
 
-bool file::read( const uint8_t *data, const size_t length, size_t *bytes_read )
+bool entry::read( const uint8_t *data, const size_t length, size_t *bytes_read )
     {
     if ( !file_handle )
         return false;
@@ -100,7 +137,7 @@ bool file::read( const uint8_t *data, const size_t length, size_t *bytes_read )
     return true;
     }
 
-bool file::seek( const off_t offset, const seek_start_point start_point )
+bool entry::seek( const off_t offset, const seek_start_point start_point )
     {
     if ( !file_handle )
         return false;
@@ -110,12 +147,23 @@ bool file::seek( const off_t offset, const seek_start_point start_point )
     return true;
     }
 
-bool file::tell( uint64_t &offset )
+bool entry::tell( uint64_t &offset )
     {
     if ( !file_handle )
         return false;
     offset = ftell( file_handle );
     return true;
     }
+
+entry_type entry::get_type( void ) const
+	{
+	return type;
+	}
+
+size_t entry::get_size( void ) const
+	{
+	return size;
+	}
+
 }
 }

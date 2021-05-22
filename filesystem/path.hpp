@@ -1,6 +1,6 @@
 #pragma once
-#include "string.hpp"
-#include "array.hpp"
+#include "../string.hpp"
+#include "../array.hpp"
 
 namespace cpplib
 {
