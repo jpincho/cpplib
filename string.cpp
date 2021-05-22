@@ -10,10 +10,9 @@ string::string ( void )
 
 string::string ( const char *new_string )
     {
-    length = capacity = strlen ( new_string );
-    elements = ( char * ) calloc ( length + 1, 1 );
-    assert ( elements );
-    memcpy ( elements, new_string, length + 1 );
+    length = capacity = 0;
+    elements = nullptr;
+    assign( new_string );
     }
 
 string::string ( const string &other )
@@ -78,6 +77,7 @@ void string::assign ( const char *new_string )
     reserve ( new_length );
     memcpy ( elements, new_string, new_length + 1 );
     length = new_length;
+    elements[length] = 0;
     }
 
 void string::assign ( const char *new_string, size_t desired_length )
@@ -88,8 +88,9 @@ void string::assign ( const char *new_string, size_t desired_length )
     if ( desired_length > max_length )
         desired_length = max_length;
     reserve ( desired_length );
-    memcpy ( elements, new_string, desired_length + 1 );
+    memcpy ( elements, new_string, desired_length );
     length = desired_length;
+    elements[length] = 0;
     }
 
 void string::assign ( const char *new_string_begin, const char *new_string_end )
@@ -100,8 +101,8 @@ void string::assign ( const char *new_string_begin, const char *new_string_end )
         return;
     reserve ( desired_length );
     memcpy ( elements, new_string_begin, desired_length );
-    elements[desired_length] = 0;
     length = desired_length;
+    elements[length] = 0;
     }
 
 void string::assign ( const string &new_string )
@@ -111,6 +112,7 @@ void string::assign ( const string &new_string )
     reserve ( new_string.length );
     memcpy ( elements, new_string.elements, new_string.length + 1 );
     length = new_string.length;
+    elements[length] = 0;
     }
 
 void string::append ( const char *new_string )
@@ -121,6 +123,7 @@ void string::append ( const char *new_string )
     reserve ( length + other_length );
     memcpy ( elements + length, new_string, other_length + 1 );
     length += other_length;
+    elements[length] = 0;
     }
 
 void string::append ( const char &new_char )
@@ -128,6 +131,7 @@ void string::append ( const char &new_char )
     reserve ( length + 1 );
     elements[length] = new_char;
     ++length;
+    elements[length] = 0;
     }
 
 void string::clear ( void )
