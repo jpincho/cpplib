@@ -40,8 +40,6 @@ class string
         void append ( const char *new_string );
         void append ( const char &new_char );
         void clear ( void );
-        bool compare ( const char *other_string ) const;
-        bool compare ( const string &other_string ) const;
         off_t find_first ( const char token, const off_t start_offset = 0 ) const;
         off_t find_last ( const char token, off_t start_offset = -1 ) const;
         off_t find_first_substr ( const string &token, const off_t start_offset = 0 ) const;
@@ -56,6 +54,8 @@ class string
         string substr ( const size_t start, size_t desired_length ) const;
         void replace_char ( const char old_value, const char new_value );
         void trim ( const char *trim_characters = " \n\r\t" );
+        bool compare ( const char *other ) const;
+        bool compare ( const string &other ) const;
         size_t get_length ( void ) const;
         bool is_empty ( void ) const;
         bool is_numeric ( void ) const;

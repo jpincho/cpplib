@@ -12,7 +12,7 @@ string::string ( const char *new_string )
     {
     length = capacity = 0;
     elements = nullptr;
-    assign( new_string );
+    assign ( new_string );
     }
 
 string::string ( const string &other )
@@ -137,33 +137,6 @@ void string::append ( const char &new_char )
 void string::clear ( void )
     {
     length = capacity = 0;
-    }
-
-bool string::compare ( const char *other_string ) const
-    {
-    size_t other_length = strlen ( other_string );
-    // if only one of them is null
-    if ( ( ( elements == nullptr ) || ( other_string == nullptr ) ) && ( elements != other_string ) )
-        return false;
-    // if both are null, return true
-    if ( ( elements == nullptr ) && ( other_string == nullptr ) )
-        return true;
-    if ( length != other_length )
-        return false;
-    return memcmp ( elements, other_string, length ) == 0;
-    }
-
-bool string::compare ( const string &other_string ) const
-    {
-    // if only one of them is null
-    if ( ( ( elements == nullptr ) || ( other_string.elements == nullptr ) ) && ( elements != other_string.elements ) )
-        return false;
-    // if both are null, return true
-    if ( ( elements == nullptr ) && ( other_string.elements == nullptr ) )
-        return true;
-    if ( length != other_string.length )
-        return false;
-    return memcmp ( elements, other_string.elements, length ) == 0;
     }
 
 off_t string::find_first ( const char token, const off_t start_offset ) const
@@ -313,6 +286,33 @@ void string::trim ( const char *trim_characters )
 
     length = end - start + 1;
     elements[length] = 0;
+    }
+
+bool string::compare ( const char *other ) const
+    {
+    // if only one of them is null
+    if ( ( ( elements == nullptr ) || ( other == nullptr ) ) && ( elements != other ) )
+        return false;
+    // if both are null, return true
+    if ( ( elements == nullptr ) && ( other == nullptr ) )
+        return true;
+    size_t other_length = strlen ( other );
+    if ( length != other_length )
+        return false;
+    return memcmp ( elements, other, length ) == 0;
+    }
+
+bool string::compare ( const string &other ) const
+    {
+    // if only one of them is null
+    if ( ( ( elements == nullptr ) || ( other.elements == nullptr ) ) && ( elements != other.elements ) )
+        return false;
+    // if both are null, return true
+    if ( ( elements == nullptr ) && ( other.elements == nullptr ) )
+        return true;
+    if ( length != other.length )
+        return false;
+    return memcmp ( elements, other.elements, length ) == 0;
     }
 
 size_t string::get_length ( void ) const
