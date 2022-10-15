@@ -22,7 +22,7 @@ void vectorized_container_test ( void )
         intptr_t index;
         do
             {
-            index = rand () % container.size ();
+            index = rand () % container.get_size ();
             }
         while ( indices.find ( index ) != indices.end () );
         indices.insert ( index );
