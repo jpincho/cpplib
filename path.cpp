@@ -1,5 +1,4 @@
 #include "path.hpp"
-#include "cpplib_config.h"
 #if defined ( CPPLIB_TARGET_PLATFORM_WINDOWS )
 #define getcwd _getcwd
 #include <direct.h>
@@ -14,77 +13,108 @@ namespace cpplib
 {
 namespace filesystem
 {
-#if defined ( CPPLIB_TARGET_PLATFORM_WINDOWS )
-static const char default_separator = '\\';
-#else
-static const char default_separator = '/';
-#endif
 path::path ( void )
     {
-    separator = default_separator;
+	separator = get_default_separator ();
     }
 
-path::path ( const char *new_path )
+path::path ( const char *new_path, const char new_path_separator )
     {
-    separator = default_separator;
-    set ( new_path );
+	separator = new_path_separator;
+	set ( new_path, separator );
     }
 
-path::path ( const string &new_path )
+path::path ( const string &new_path, const char new_path_separator )
     {
-    separator = default_separator;
-    set ( new_path );
+	separator = new_path_separator;
+	set ( new_path, separator );
     }
 
 void path::set ( string new_path )
     {
-	clear ();
-	new_path.trim();
-    string_split ( new_path, separator, parts, true );
+	set ( new_path, separator );
     }
 
 void path::set ( const char *new_path )
     {
+	set ( new_path, separator );
+    }
+
+void path::set ( string new_path, const char custom_separator )
+	{
+	clear ();
+	new_path.trim ();
+	string_split ( new_path, custom_separator, parts, true );
+	}
+
+void path::set ( const char *new_path, const char custom_separator )
+	{
 	clear ();
 	string string_path ( new_path );
 	string_path.trim ();
-	string_split ( string_path, separator, parts, true );
-    }
+	string_split ( string_path, custom_separator, parts, true );
+	}
+
+void path::set_separator ( const char new_separator )
+	{
+	separator = new_separator;
+	}
+
+char path::get_separator ( void ) const
+	{
+	return separator;
+	}
 
 void path::clear ( void )
     {
     parts.clear();
     }
 
-string path::get_owning_path ( void ) const
-    {
-    string result;
-    result = root;
-    for ( size_t index = 0; parts.get_size() > 0 && index < parts.get_size() - 1; ++index )
-        {
-        result += parts[index];
-        result += separator;
-        }
-    return result;
-    }
+string path::get_owning_path_as_string ( void ) const
+	{
+	return get_owning_path_as_string ( separator );
+	}
+
+string path::get_owning_path_as_string ( const char custom_separator ) const
+	{
+	string result;
+	result = root;
+	for ( size_t index = 0; parts.get_size () > 0 && index < parts.get_size () - 1; ++index )
+		{
+		result += parts[index];
+		result += custom_separator;
+		}
+	return result;
+	}
 
 string path::get_as_string ( void ) const
     {
-    string result;
-    result = root;
-    for ( size_t index = 0; index < parts.get_size(); ++index )
-        {
-        result += parts[index];
-        result += separator;
-        }
-    return result;
+	return get_as_string ( separator );
     }
+
+string path::get_as_string ( const char custom_separator ) const
+	{
+	string result;
+	result = root;
+	for ( size_t index = 0; index < parts.get_size (); ++index )
+		{
+		result += parts[index];
+		result += custom_separator;
+		}
+	return result;
+	}
 
 void path::go_down ( string new_child_path )
     {
     new_child_path.trim();
     string_split ( new_child_path, separator, parts, true );
     }
+
+void path::go_down ( string new_child_path, const char custom_separator )
+	{
+	new_child_path.trim ();
+	string_split ( new_child_path, custom_separator, parts, true );
+	}
 
 void path::go_up ( void )
     {
