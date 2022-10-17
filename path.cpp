@@ -36,18 +36,19 @@ path::path ( const string &new_path )
     set ( new_path );
     }
 
-void path::set ( const string &new_path )
+void path::set ( string new_path )
     {
-    string temp = new_path;
-    temp.trim();
-    //temp.replace_char( '\\', '/' );
-    string_split ( temp, separator, parts, true );
+	clear ();
+	new_path.trim();
+    string_split ( new_path, separator, parts, true );
     }
 
 void path::set ( const char *new_path )
     {
-    parts.clear();
-    set ( string ( new_path ) );
+	clear ();
+	string string_path ( new_path );
+	string_path.trim ();
+	string_split ( string_path, separator, parts, true );
     }
 
 void path::clear ( void )
@@ -79,13 +80,12 @@ string path::get_as_string ( void ) const
     return result;
     }
 
-void path::go_down ( const string &new_child_path )
+void path::go_down ( string new_child_path )
     {
-    string temp = new_child_path;
-    temp.trim();
-    //temp.replace_char( '\\', '/' );
-    string_split ( temp, separator, parts, true );
+    new_child_path.trim();
+    string_split ( new_child_path, separator, parts, true );
     }
+
 void path::go_up ( void )
     {
     parts.pop_back();
