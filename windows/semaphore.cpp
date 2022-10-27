@@ -6,6 +6,8 @@ namespace cpplib
 semaphore::semaphore ( void )
     {
     created = false;
+	handle = nullptr;
+	lock_count = 0;
     }
 
 bool semaphore::create ( int32_t initial_count, int32_t max_count )

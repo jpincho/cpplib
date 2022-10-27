@@ -115,6 +115,17 @@ void string::assign ( const string &new_string )
     elements[length] = 0;
     }
 
+void string::append ( const string &new_string )
+	{
+	size_t other_length = new_string.get_length ();
+	if ( other_length == 0 )
+		return;
+	reserve ( length + other_length );
+	memcpy ( elements + length, new_string.get_data(), other_length + 1);
+	length += other_length;
+	elements[length] = 0;
+	}
+
 void string::append ( const char *new_string )
     {
     size_t other_length = strlen ( new_string );

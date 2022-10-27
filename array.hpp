@@ -165,7 +165,7 @@ typename array<value_type>::iterator array<value_type>::iterator::operator + ( c
 template <typename value_type>
 value_type &array<value_type>::iterator::get ( void ) const
     {
-    return ( *owning_array ) [ index ];
+    return ( *owner ) [ index ];
     }
 
 template <typename value_type>
