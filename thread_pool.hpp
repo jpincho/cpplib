@@ -3,6 +3,7 @@
 #include "mutex.hpp"
 #include "semaphore.hpp"
 #include "list.hpp"
+#include <stdint.h>
 
 namespace cpplib
 {

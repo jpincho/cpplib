@@ -1,7 +1,7 @@
 #pragma once
 #include "string.hpp"
 #include <stdint.h>
-#include <math.h>
+//#include <math.h>
 
 namespace cpplib
 {

@@ -1,4 +1,7 @@
 #include "string.hpp"
+#include <stdlib.h>
+#include <memory.h>
+#include <assert.h>
 
 namespace cpplib
 {

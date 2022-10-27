@@ -1,6 +1,8 @@
 #pragma once
+#if defined ( _MSC_VER )
 #include <string.h>
 #include <stdio.h>
+#endif
 
 namespace cpplib
 {

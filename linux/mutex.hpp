@@ -1,14 +1,12 @@
 #pragma once
-#if defined ( _MSC_VER )
-#include <windows.h>
-#endif
+#include <pthread.h>
 
 namespace cpplib
 {
 class mutex
     {
     private:
-        CRITICAL_SECTION handle;
+		pthread_mutex_t handle;
         bool created;
         mutex &operator = ( const mutex &other ) = delete;
     public:

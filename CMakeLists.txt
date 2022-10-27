@@ -1,5 +1,5 @@
 project ( cpplib )
-cmake_minimum_required ( VERSION 3.14 )
+cmake_minimum_required ( VERSION 3.7 )
 
 set ( CMAKE_CXX_STANDARD 11 )
 set ( CMAKE_CXX_STANDARD_REQUIRED ON )
@@ -30,6 +30,9 @@ endif()
 
 if ( MSVC )
 	file ( GLOB THREAD_SOURCES "windows/*" )
+	list ( APPEND SOURCES ${THREAD_SOURCES} )
+elseif ( CPPLIB_TARGET_PLATFORM_LINUX )
+	file ( GLOB THREAD_SOURCES "linux/*" )
 	list ( APPEND SOURCES ${THREAD_SOURCES} )
 endif()
 configure_file ( cpplib_config.h.in ${CMAKE_CURRENT_LIST_DIR}/cpplib_config.h )

@@ -1,6 +1,5 @@
-#pragma once
 #include "hash.hpp"
-#include <stdint.h>
+//#include <stdint.h>
 #include <math.h>
 
 namespace cpplib

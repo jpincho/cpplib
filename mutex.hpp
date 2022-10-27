@@ -2,6 +2,8 @@
 #include "cpplib_config.h"
 #if defined ( CPPLIB_TARGET_PLATFORM_WINDOWS )
 #include "windows/mutex.hpp"
+#else
+#include "linux/mutex.hpp"
 #endif
 
 namespace cpplib

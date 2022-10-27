@@ -1,7 +1,14 @@
 #pragma once
+#if defined ( _MSC_VER )
+//#include <Windows.h>
+//#include <stdint.h>
 #include <sys/types.h>
-#include <stdint.h>
+//#include <stdint.h>
 #include <new>
+#else
+#include <stdlib.h>
+#include <new>
+#endif
 
 namespace cpplib
 {
@@ -13,7 +20,7 @@ template <typename value_type> class array
     public:
         class iterator
             {
-                template <typename value_type> friend class array;
+                friend class array;
             protected:
                 off_t index;
                 const array <value_type> *owner;

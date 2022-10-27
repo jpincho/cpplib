@@ -1,16 +1,14 @@
 #pragma once
-#if defined ( _MSC_VER )
-#include <windows.h>
+#include <pthread.h>
 #include <stdint.h>
-#endif
 
 namespace cpplib
 {
 class thread
     {
     private:
-        DWORD thread_id;
-        HANDLE thread_handle;
+		pthread_t thread_handle;
+		bool running;
         thread &operator = ( const thread &other ) = delete;
     public:
         thread ( void );

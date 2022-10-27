@@ -1,6 +1,8 @@
 #pragma once
+#if defined ( _MSC_VER )
 #include <sys/types.h>
 #include <stdlib.h>
+#endif
 
 namespace cpplib
 {

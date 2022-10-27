@@ -1,8 +1,9 @@
 #pragma once
-#include <stdlib.h>
-#include <memory.h>
+#if defined ( _MSC_VER )
 #include <sys/types.h>
-#include <assert.h>
+#else
+#include <sys/types.h>
+#endif
 
 namespace cpplib
 {

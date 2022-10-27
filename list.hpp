@@ -1,5 +1,9 @@
 #pragma once
+#if defined ( _MSC_VER )
 #include <sys/types.h>
+#else
+#include <sys/types.h>
+#endif
 
 namespace cpplib
 {
@@ -21,7 +25,7 @@ class list
     public:
         class iterator
             {
-                template <typename value_type> friend class list;
+                friend class list;
             protected:
                 list_node *current;
                 const list <value_type> *owner;
