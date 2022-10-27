@@ -37,6 +37,7 @@ class string
         void assign ( const char *new_string, size_t desired_length );
         void assign ( const char *new_string_begin, const char *new_string_end );
         void assign ( const string &new_string );
+		void append ( const string &new_string );
         void append ( const char *new_string );
         void append ( const char &new_char );
         void clear ( void );

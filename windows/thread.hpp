@@ -17,4 +17,6 @@ class thread
         bool is_running ( void );
         static uint32_t get_id ( void );
     };
+
+int get_core_count ( void );
 }

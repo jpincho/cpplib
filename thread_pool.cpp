@@ -3,7 +3,6 @@
 
 namespace cpplib
 {
-
 class thread_pool_worker
     {
     private:
@@ -77,12 +76,15 @@ thread_pool::~thread_pool ( void )
     shutdown();
     }
 
-bool thread_pool::initialize ( void )
+bool thread_pool::initialize ( int new_thread_count )
     {
     if ( running )
         return false;
+	if ( new_thread_count == 0 )
+		new_thread_count = get_core_count ();
     if ( new_task_semaphore.create ( 0 ) == false )
         return false;
+	thread_count = new_thread_count;
     running = true;
     printf ( "Thread pool initializing with %zu threads\n", thread_count );
     thread_array = new thread[thread_count];
@@ -114,10 +116,16 @@ bool thread_pool::shutdown ( void )
     return true;
     }
 
-uint32_t thread_pool::get_thread_count ( void )
+uint32_t thread_pool::get_thread_count ( void ) const
     {
     return thread_count;
     }
+
+uint32_t thread_pool::get_task_count ( void )
+	{
+	auto_mutex_lock lock ( task_list_mutex );
+	return task_list.get_size ();
+	}
 
 void thread_pool::add_task ( uint32_t ( *function ) ( void * ), void *parameters )
     {

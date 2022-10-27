@@ -38,4 +38,11 @@ uint32_t thread::get_id ( void )
     {
     return GetCurrentThreadId();
     }
+
+int get_core_count ( void )
+	{
+	SYSTEM_INFO sysinfo;
+	GetSystemInfo ( &sysinfo );
+	return sysinfo.dwNumberOfProcessors;
+	}
 }

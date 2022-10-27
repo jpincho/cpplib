@@ -52,3 +52,6 @@ add_test ( NAME "ring_buffer_tests" COMMAND ring_buffer_tests )
 add_executable ( vectorized_container_tests "tests/vectorized_container_tests.cpp" )
 add_test ( NAME "vectorized_container_tests" COMMAND vectorized_container_tests )
 
+add_executable ( thread_pool_tests "tests/thread_pool_tests.cpp" )
+target_link_libraries ( thread_pool_tests cpplib )
+add_test ( NAME "thread_pool_tests" COMMAND thread_pool_tests )

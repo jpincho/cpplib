@@ -36,9 +36,10 @@ class thread_pool
     public:
         thread_pool ( void );
         ~thread_pool ( void );
-        bool initialize ( void );
+        bool initialize ( int new_thread_count = 0 );
         bool shutdown ( void );
-        uint32_t get_thread_count ( void );
+        uint32_t get_thread_count ( void ) const;
+		uint32_t get_task_count ( void );
         void add_task ( uint32_t ( *function ) ( void * ), void *parameters );
         void clear_tasks ( void );
     };
